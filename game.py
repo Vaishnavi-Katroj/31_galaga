@@ -3,30 +3,37 @@ import random
 import pygame
 
 WIDTH, HEIGHT = 600, 700
+CURRENT_WAVE = 1
 PLAYER_Y, PLAYER_SPEED, SHIP_GAP = HEIGHT - 50, 300, 30
 ENTRY_TIME = 2.0
 
 
 def bezier(p0, p1, p2, p3, t):
     u = 1 - t
-    x = u ** 3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * p2[0] + t ** 3 * p3[0]
-    y = u ** 3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * p2[1] + t ** 3 * p3[1]
+    x = u ** 3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t ** 3 * p3[0]
+    y = u ** 3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t ** 3 * p3[1]
     return pygame.Vector2(x, y)
 
 
 def enemy_tint(kind):
     """Return an (r, g, b) colour override for an enemy kind, or None for the default."""
-    pass
-
+    if CURRENT_WAVE >= 3:
+        if kind == "boss":
+            return (255, 180, 60)
+        elif kind == "red":
+            return (255, 100, 100)
+        elif kind == "blue":
+            return (100, 200, 255)
+    return None
 
 def on_wave_start(wave):
     """Called at the start of every wave; add banners, speed-ups, or palette swaps here."""
-    pass
-
+    global CURRENT_WAVE
+    CURRENT_WAVE = wave
 
 def shield_charges(wave):
     """Return how many hits the player's shield can absorb this wave, or None to disable the shield."""
-    pass
+    return 1 if wave % 3 == 0 else 0
 
 
 ENEMY_COLORS = {"boss": (90, 220, 90), "red": (230, 70, 70), "blue": (80, 140, 240)}
